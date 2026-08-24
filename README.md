@@ -7,11 +7,8 @@ This project is a React, Express, and MongoDB portal where employees can apply f
 ## Project structure
 
 ```text
-frontend/                 React + Vite application
-backend/                  Express + Mongoose REST API
-docs/TASK_CHECKLIST.md    Requirement-by-requirement implementation map
-docs/REPORT_CHECKLIST.md  Steps for the final Set C PDF report
-postman/                  Importable API test collection
+frontend/     React + Vite application
+backend/      Express + Mongoose REST API
 ```
 
 ## Prerequisites
