@@ -18,3 +18,7 @@ Thumbs.db
 
 # Temporary report assets
 report-screenshots/
+
+# Local-only submission helpers (not uploaded to GitHub)
+docs/
+postman/
