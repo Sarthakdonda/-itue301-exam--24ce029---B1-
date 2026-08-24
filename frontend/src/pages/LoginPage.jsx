@@ -1,21 +1,48 @@
 import { useState } from "react";
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { apiRequest } from "../api";
 import { useAuth } from "../context/AuthContext";
+import { getRoleHome } from "../roleRoutes";
+
+const demoAccounts = [
+  {
+    role: "Employee",
+    email: "employee@example.com",
+    password: "Password123!",
+    description: "Apply for leave and view personal history",
+  },
+  {
+    role: "Manager",
+    email: "manager@example.com",
+    password: "Password123!",
+    description: "Review and decide employee requests",
+  },
+  {
+    role: "HR",
+    email: "hr@example.com",
+    password: "Password123!",
+    description: "Manage all requests and export reports",
+  },
+];
 
 function LoginPage() {
   const { login, role, token } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
   const [credentials, setCredentials] = useState({
     email: "employee@example.com",
     password: "Password123!",
   });
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   if (token) {
-    return <Navigate to={role === "hr" ? "/hr" : "/my-leaves"} replace />;
+    return <Navigate to={getRoleHome(role)} replace />;
+  }
+
+  function selectDemoAccount(account) {
+    setCredentials({ email: account.email, password: account.password });
+    setError("");
   }
 
   function handleChange(event) {
@@ -36,9 +63,7 @@ function LoginPage() {
         body: JSON.stringify(credentials),
       });
       login(data);
-      navigate(location.state?.from || (data.role === "hr" ? "/hr" : "/my-leaves"), {
-        replace: true,
-      });
+      navigate(getRoleHome(data.role), { replace: true });
     } catch (requestError) {
       setError(requestError.message || "Unable to sign in.");
     } finally {
@@ -81,14 +106,19 @@ function LoginPage() {
 
           <label>
             Password
-            <input
-              type="password"
-              name="password"
-              value={credentials.password}
-              onChange={handleChange}
-              autoComplete="current-password"
-              required
-            />
+            <span className="password-control">
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                value={credentials.password}
+                onChange={handleChange}
+                autoComplete="current-password"
+                required
+              />
+              <button type="button" onClick={() => setShowPassword((current) => !current)}>
+                {showPassword ? "Hide" : "Show"}
+              </button>
+            </span>
           </label>
 
           {error && <p className="alert alert-error">{error}</p>}
@@ -98,11 +128,26 @@ function LoginPage() {
           </button>
         </form>
 
-        <div className="demo-note">
-          <strong>Demo users after seeding</strong>
-          <span>Employee: employee@example.com</span>
-          <span>HR: hr@example.com</span>
-          <span>Password: Password123!</span>
+        <div className="demo-accounts">
+          <div className="demo-heading">
+            <strong>Demo accounts</strong>
+            <span>Choose an account to fill the form</span>
+          </div>
+          {demoAccounts.map((account) => (
+            <button
+              type="button"
+              className={`demo-account${credentials.email === account.email ? " selected" : ""}`}
+              key={account.role}
+              onClick={() => selectDemoAccount(account)}
+            >
+              <span className="demo-role">{account.role}</span>
+              <span className="demo-description">{account.description}</span>
+              <span className="demo-credentials">
+                <code>{account.email}</code>
+                <code>{account.password}</code>
+              </span>
+            </button>
+          ))}
         </div>
       </div>
     </section>

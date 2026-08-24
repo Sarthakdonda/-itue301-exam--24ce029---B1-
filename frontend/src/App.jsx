@@ -1,7 +1,6 @@
 import { lazy, Suspense } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import Navigation from "./components/Navigation";
-import ProtectedRoute from "./components/ProtectedRoute";
 import RoleProtectedRoute from "./components/RoleProtectedRoute";
 import ApplyLeavePage from "./pages/ApplyLeavePage";
 import LoginPage from "./pages/LoginPage";
@@ -19,17 +18,17 @@ function App() {
           <Route
             path="/apply"
             element={
-              <ProtectedRoute>
+              <RoleProtectedRoute requiredRole="employee">
                 <ApplyLeavePage />
-              </ProtectedRoute>
+              </RoleProtectedRoute>
             }
           />
           <Route
             path="/my-leaves"
             element={
-              <ProtectedRoute>
+              <RoleProtectedRoute requiredRole="employee">
                 <MyLeavesPage />
-              </ProtectedRoute>
+              </RoleProtectedRoute>
             }
           />
           <Route
@@ -37,6 +36,16 @@ function App() {
             element={
               <RoleProtectedRoute requiredRole="hr">
                 <Suspense fallback={<p className="state-message">Loading HR panel…</p>}>
+                  <HRPanel />
+                </Suspense>
+              </RoleProtectedRoute>
+            }
+          />
+          <Route
+            path="/manager"
+            element={
+              <RoleProtectedRoute requiredRole="manager">
+                <Suspense fallback={<p className="state-message">Loading manager panel…</p>}>
                   <HRPanel />
                 </Suspense>
               </RoleProtectedRoute>

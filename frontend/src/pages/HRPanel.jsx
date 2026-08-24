@@ -8,7 +8,7 @@ function escapeCsv(value) {
 }
 
 function HRPanel() {
-  const { token } = useAuth();
+  const { token, role } = useAuth();
   const [leaves, setLeaves] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -92,13 +92,19 @@ function HRPanel() {
     <section>
       <div className="page-heading">
         <div>
-          <p className="eyebrow">HR workspace</p>
-          <h1>Leave request overview</h1>
-          <p>Review decisions and export a current leave report.</p>
+          <p className="eyebrow">{role === "hr" ? "HR workspace" : "Manager workspace"}</p>
+          <h1>{role === "hr" ? "Workforce leave overview" : "Team leave review"}</h1>
+          <p>
+            {role === "hr"
+              ? "Review decisions and export a current leave report."
+              : "Approve or reject pending employee leave requests."}
+          </p>
         </div>
-        <button type="button" className="button button-secondary" onClick={exportReport} disabled={!leaves.length}>
-          Export CSV report
-        </button>
+        {role === "hr" && (
+          <button type="button" className="button button-secondary" onClick={exportReport} disabled={!leaves.length}>
+            Export CSV report
+          </button>
+        )}
       </div>
 
       <div className="summary-grid">

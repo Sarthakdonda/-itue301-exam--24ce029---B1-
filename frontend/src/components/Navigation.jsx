@@ -1,5 +1,6 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { getRoleHome } from "../roleRoutes";
 
 function Navigation() {
   const { employee, role, token, logout } = useAuth();
@@ -12,7 +13,7 @@ function Navigation() {
 
   return (
     <header className="site-header">
-      <NavLink to="/" className="brand" aria-label="Leave Management home">
+      <NavLink to={token ? getRoleHome(role) : "/"} className="brand" aria-label="Leave Management home">
         <span className="brand-mark">LM</span>
         <span>
           <strong>Leave Management</strong>
@@ -21,10 +22,15 @@ function Navigation() {
       </NavLink>
 
       <nav aria-label="Primary navigation">
-        <NavLink to="/">Login</NavLink>
-        <NavLink to="/apply">Apply Leave</NavLink>
-        <NavLink to="/my-leaves">My Leaves</NavLink>
-        <NavLink to="/hr">HR Panel</NavLink>
+        {!token && <NavLink to="/">Login</NavLink>}
+        {role === "employee" && (
+          <>
+            <NavLink to="/apply">Apply Leave</NavLink>
+            <NavLink to="/my-leaves">My Leaves</NavLink>
+          </>
+        )}
+        {role === "hr" && <NavLink to="/hr">HR Panel</NavLink>}
+        {role === "manager" && <NavLink to="/manager">Review Requests</NavLink>}
       </nav>
 
       <div className="account-area">

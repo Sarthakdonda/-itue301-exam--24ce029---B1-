@@ -1,5 +1,6 @@
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { getRoleHome } from "../roleRoutes";
 import ProtectedRoute from "./ProtectedRoute";
 
 function RoleProtectedRoute({ requiredRole, children }) {
@@ -7,7 +8,7 @@ function RoleProtectedRoute({ requiredRole, children }) {
 
   return (
     <ProtectedRoute>
-      {role === requiredRole ? children : <Navigate to="/my-leaves" replace />}
+      {role === requiredRole ? children : <Navigate to={getRoleHome(role)} replace />}
     </ProtectedRoute>
   );
 }
